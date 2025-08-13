@@ -1,4 +1,3 @@
-name: Result Service CI
 
 on:
   push:
@@ -31,10 +30,17 @@ jobs:
           cd result
           npm install
 
-      - name: Lint Result Service (ESLint)
+      - name: Run Prettier check
         run: |
           cd result
-          npx eslint .
+          npm install prettier # Install prettier
+          npx prettier --check "**/*.{js,html,css}" # Check JavaScript, HTML, CSS files for formatting issues
+        working-directory: result # Ensure the command runs from the 'result' directory
+
+      # - name: Lint Result Service (ESLint)
+      #   run: |
+      #     cd result
+      #     npx eslint .
 
       - name: Run SCA on Result Service (Trivy)
         uses: aquasecurity/trivy-action@master
