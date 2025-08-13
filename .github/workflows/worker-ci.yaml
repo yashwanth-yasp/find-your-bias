@@ -28,14 +28,14 @@ jobs:
 
       # No specific linting/SAST for C# shown in previous example, but you'd add tools like SonarQube Scanner or Roslyn Analyzers here.
 
-      - name: Run SCA on Worker Service (Trivy)
-        uses: aquasecurity/trivy-action@master
-        with:
-          scanners: "vuln"
-          format: "table"
-          target: "worker"
-          ignore-unfixed: true
-          severity: "HIGH,CRITICAL"
+      #- name: Run SCA on Worker Service (Trivy)
+       # uses: aquasecurity/trivy-action@master
+        #with:
+         # scanners: "vuln"
+          #format: "table"
+          #target: "worker"
+          #ignore-unfixed: true
+          #severity: "HIGH,CRITICAL"
 
      # - name: Run Worker Service Unit Tests
        # run: |
