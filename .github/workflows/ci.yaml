@@ -46,7 +46,7 @@ jobs:
         with:
           context: ./vote
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/result-find-your-bias:${{ github.sha }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/vote-find-your-bias:${{ github.sha }}
 
   # -------------------- RESULT SERVICE --------------------
   result-service:
