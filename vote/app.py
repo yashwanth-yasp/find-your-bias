@@ -20,11 +20,10 @@ app.logger.setLevel(logging.INFO)
 # Each line in the file is treated as a separate tweet.
 try:
     with open('tweets.txt', 'r') as f:
-        # Read all lines from the file and remove any leading/trailing whitespace
         tweets = [line.strip() for line in f.readlines()]
 except FileNotFoundError:
-    app.logger.warning("tweets.txt not found. Using a default tweet.")
-    tweets = ["Could not find tweets.txt. Please create it to see random tweets here."]
+    app.logger.warning("tweets.txt not found. ")
+    tweets = ["Could not find tweets.txt. "]
 
 
 def get_redis():
@@ -32,7 +31,8 @@ def get_redis():
         g.redis = Redis(host="redis", db=0, socket_timeout=5)
     return g.redis
 
-@app.route("/", methods=['POST','GET'])
+
+@app.route("/", methods=['POST', 'GET'])
 def hello():
     voter_id = request.cookies.get('voter_id')
     if not voter_id:
@@ -56,7 +56,7 @@ def hello():
         option_b=option_b,
         hostname=hostname,
         vote=vote,
-        tweet=tweet, # Pass the selected tweet string to the template
+        tweet=tweet,  # Pass the selected tweet string to the template
     ))
     resp.set_cookie('voter_id', voter_id)
     return resp
