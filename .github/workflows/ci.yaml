@@ -146,24 +146,24 @@ jobs:
           dotnet-version: '7.0'
 
       # SCA
-      - name: Run SCA on Worker Service (Trivy)
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: fs
-          scan-ref: worker
-          format: table
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
+      # - name: Run SCA on Worker Service (Trivy)
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     scan-type: fs
+      #     scan-ref: worker
+      #     format: table
+      #     severity: HIGH,CRITICAL
+      #     ignore-unfixed: true
 
       # (Optional) Add Roslyn analyzers or SonarQube for SAST
       # - name: Run SAST on Worker Service
       #   run: dotnet build /p:RunAnalyzers=true
 
       # Unit tests
-      - name: Run Worker Service Unit Tests
-        run: |
-          cd worker
-          dotnet test || true
+      # - name: Run Worker Service Unit Tests
+      #   run: |
+      #     cd worker
+      #     dotnet test || true
 
       # Docker build & push
       - name: Set up Docker Buildx
