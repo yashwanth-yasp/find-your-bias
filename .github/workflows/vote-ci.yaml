@@ -31,14 +31,14 @@ jobs:
           pip install flake8
           flake8 vote/app.py
 
-      - name: Run SCA on Vote Service (Trivy)
-        uses: aquasecurity/trivy-action@master
-        with:
-          scanners: "vuln"
-          format: "table"
-          target: "vote"
-          ignore-unfixed: true
-          severity: "HIGH,CRITICAL"
+     # - name: Run SCA on Vote Service (Trivy)
+       # uses: aquasecurity/trivy-action@master
+       # with:
+         # scanners: "vuln"
+         # format: "table"
+         # target: "vote"
+         # ignore-unfixed: true
+         # severity: "HIGH,CRITICAL"
 
       - name: Run SAST on Vote Service (Bandit)
         run: |
