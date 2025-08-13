@@ -1,18 +1,34 @@
-name: CD Pipeline
+name: Simple CD after CI
+
 on:
-  push:
+  workflow_run:
+    workflows: ["Microservices CI"]
+    types:
+      - completed 
     branches:
-      - main
+      - main 
+
 jobs:
-  ci-cd:
+  deploy:
     runs-on: self-hosted
-    permissions:
-      contents: read
-      security-events: write
+
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.workflow_run.head_repository.full_name }}
+          ref: ${{ github.event.workflow_run.head_sha }}
+
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f k8s-specifications
+          # The image tag needs to be the same SHA that the CI workflow built and pushed.
+          # We get it from the workflow_run event's head_sha.
+          
+          kubectl set image deployment/vote vote=${{ secrets.DOCKER_HUB_USERNAME }}/vote-find-your-bias:${{ github.event.workflow_run.head_sha }}
+          kubectl set image deployment/result result=${{ secrets.DOCKER_HUB_USERNAME }}/result-find-your-bias:${{ github.event.workflow_run.head_sha }}
+          kubectl set image deployment/worker worker=${{ secrets.DOCKER_HUB_USERNAME }}/worker-find-your-bias:${{ github.event.workflow_run.head_sha }}
+          
+          kubectl rollout status deployment/vote
+          kubectl rollout status deployment/result
+          kubectl rollout status deployment/worker
 
