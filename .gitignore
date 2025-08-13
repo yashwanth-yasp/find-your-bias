@@ -1,2 +1,2 @@
 .vscode/
-infra/.terraform/*
+infra/.terraform/
