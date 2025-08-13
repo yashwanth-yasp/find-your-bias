@@ -4,15 +4,15 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'vote/**' # Trigger only when changes are in the 'vote' directory
-      - '.github/workflows/vote-ci.yaml'
+    #paths:
+     # - 'vote/**' # Trigger only when changes are in the 'vote' directory
+     # - '.github/workflows/vote-ci.yaml'
   pull_request:
     branches:
       - main
-    paths:
-      - 'vote/**'
-      - '.github/workflows/vote-ci.yaml'
+    #paths:
+     # - 'vote/**'
+      #- '.github/workflows/vote-ci.yaml'
 
 jobs:
   build-and-test:
