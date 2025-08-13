@@ -9,7 +9,7 @@ from redis import Redis
 
 # Configuration from environment variables or defaults
 option_a = os.getenv("OPTION_A", "Agree ah")
-option_b = os.getenv("OPTION_B", "Disagree")
+option_b = os.getenv("OPTION_B", "Disagree change")
 hostname = socket.gethostname()
 
 app = Flask(__name__)
