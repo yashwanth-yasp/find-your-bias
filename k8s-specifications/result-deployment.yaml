@@ -15,7 +15,7 @@ spec:
         app: result
     spec:
       containers:
-      - image: dockersamples/examplevotingapp_result
+      - image: deadvexon/result-find-your-bias
         name: result
         ports:
         - containerPort: 80
