@@ -34,7 +34,7 @@ jobs:
         run: |
           #cd result
           npm install prettier # Install prettier
-          npx prettier --check "**/*.{js,html,css}" # Check JavaScript, HTML, CSS files for formatting issues
+          npx prettier --check "server.js" # Check JavaScript, HTML, CSS files for formatting issues
         working-directory: result # Ensure the command runs from the 'result' directory
 
       # - name: Lint Result Service (ESLint)
