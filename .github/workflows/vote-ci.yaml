@@ -59,4 +59,4 @@ jobs:
         with:
           context: ./vote
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/vote-find-your-bias:v1
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/vote-find-your-bias:v2

@@ -15,7 +15,7 @@ spec:
         app: vote
     spec:
       containers:
-      - image: deadvexon/vote-find-your-bias:v1
+      - image: deadvexon/vote-find-your-bias:v2
         imagePullPolicy: Always
         name: vote
         ports:
