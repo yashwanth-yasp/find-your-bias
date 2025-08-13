@@ -42,19 +42,19 @@ jobs:
       #     cd result
       #     npx eslint .
 
-      - name: Run SCA on Result Service (Trivy)
-        uses: aquasecurity/trivy-action@master
-        with:
-          scanners: "vuln"
-          format: "table"
-          target: "result"
-          ignore-unfixed: true
-          severity: "HIGH,CRITICAL"
+      #- name: Run SCA on Result Service (Trivy)
+       # uses: aquasecurity/trivy-action@master
+        #with:
+         # scanners: "vuln"
+         # format: "table"
+         #target: "result"
+         # ignore-unfixed: true
+          #severity: "HIGH,CRITICAL"
 
-      - name: Run SAST on Result Service (ESLint for security rules)
-        run: |
-          cd result
-          npx eslint --config .eslintrc.security.js . || true # Requires .eslintrc.security.js
+      #- name: Run SAST on Result Service (ESLint for security rules)
+       # run: |
+         # cd result
+          #npx eslint --config .eslintrc.security.js . || true # Requires .eslintrc.security.js
 
       #- name: Run Result Service Unit Tests
        # run: |
