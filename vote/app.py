@@ -26,7 +26,7 @@ try:
         tweets = [line.strip() for line in f.readlines()]
 except FileNotFoundError:
     app.logger.warning(
-        "tweets.txt not found. Please create it in the same directory as app.py"
+        "tweets.txt not found."
     )
     tweets = ["Could not find tweets.txt."]
 
@@ -59,7 +59,7 @@ def hello():
     if request.method == "POST":
         redis = get_redis()
         vote = request.form["vote"]
-        app.logger.info("Received vote for %s from voter_id: %s", vote, voter_id)
+        app.logger.info("vote for %s from voter_id: %s", vote, voter_id)
         data = json.dumps({"voter_id": voter_id, "vote": vote})
         redis.rpush("votes", data)  # Push vote data to Redis list
 
@@ -85,3 +85,4 @@ if __name__ == "__main__":
     # Ensure 'tweets.txt' exists in the same directory for tweets to load.
     # This block is for local development runs, not for production Gunicorn.
     app.run(host="0.0.0.0", port=80, debug=True, threaded=True)
+
