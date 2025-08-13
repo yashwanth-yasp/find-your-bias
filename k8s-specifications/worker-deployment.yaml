@@ -16,4 +16,5 @@ spec:
     spec:
       containers:
       - image: deadvexon/worker-find-your-bias
+        imagePullPolicy: Always
         name: worker

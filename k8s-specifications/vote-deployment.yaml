@@ -16,6 +16,7 @@ spec:
     spec:
       containers:
       - image: deadvexon/vote-find-your-bias:latest
+        imagePullPolicy: Always
         name: vote
         ports:
         - containerPort: 80
