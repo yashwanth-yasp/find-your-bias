@@ -18,4 +18,3 @@ def test_home_get_request(client):
     """GET / should return status 200."""
     response = client.get("/")
     assert response.status_code == 200
-
