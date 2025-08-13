@@ -1,0 +1,18 @@
+import sys
+import os
+import pytest
+
+# Add the parent folder (vote/) to sys.path so app.py is importable
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from app import app  # now works
+
+@pytest.fixture
+def client():
+    app.testing = True
+    return app.test_client()
+
+def test_home_get_request(client):
+    response = client.get("/")
+    assert response.status_code == 200
+
