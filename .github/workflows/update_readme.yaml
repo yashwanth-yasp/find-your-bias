@@ -2,7 +2,7 @@ name: Update README Progress
 
 on:
   workflow_run:
-    workflows: ["Microservices CI"] 
+    workflows: ["Microservices CI"]
     types:
       - completed
 
@@ -35,20 +35,17 @@ jobs:
               print("No task-done: in commit message. Skipping.")
               exit(0)
 
-          # Extract task name
           task_name = commit_message.split("task-done:", 1)[1].strip()
 
           readme_path = "README.md"
           with open(readme_path, "r", encoding="utf-8") as f:
               content = f.read()
 
-          # Check if already done (case-insensitive)
           already_done_pattern = rf"- \[x\] {re.escape(task_name)}"
           if re.search(already_done_pattern, content, flags=re.IGNORECASE):
               print(f"Task '{task_name}' is already marked done. Skipping update.")
               exit(0)
 
-          # Match unchecked task case-insensitively and replace
           pattern = rf"- \[ \] {re.escape(task_name)}"
           updated_content = re.sub(
               pattern,
@@ -57,22 +54,10 @@ jobs:
               flags=re.IGNORECASE
           )
 
-          # Recalculate progress
-          #total_tasks = len(re.findall(r"- \[.\]", updated_content))
-          #done_tasks = len(re.findall(r"- \[x\]", updated_content))
-          #progress = int((done_tasks / total_tasks) * 100) if total_tasks else 0
-
-          # Update progress bar
-         # updated_content = re.sub(
-         #     r"!\[progress\]\(https://progress-bar.dev/\d+/?\)",
-         #     f"![progress](https://progress-bar.dev/{progress}/)",
-         #     updated_content
-         # )
-
           with open(readme_path, "w", encoding="utf-8") as f:
               f.write(updated_content)
 
-          #print(f"Updated task '{task_name}' and progress bar to {progress}%.")
+          print(f"Updated task '{task_name}' in README.")
           EOF
         env:
           COMMIT_MSG: ${{ github.event.workflow_run.head_commit.message }}
@@ -82,6 +67,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add README.md
-          git commit -m "Auto-update task and progress bar" || echo "No changes to commit"
+          git commit -m "Auto-update task" || echo "No changes to commit"
           git push
 
