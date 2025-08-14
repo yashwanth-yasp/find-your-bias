@@ -2,10 +2,10 @@
 
 ## Project Tasks
 
-![progress](https://progress-bar.dev/0/)
+![progress](https://progress-bar.dev/20/)
 
 ## To-Do List
-- [ ] Add Progress bar1
+- [x] Add Progress bar1
 - [ ] Vote Microservice Deployment
 - [ ] Result Microservice Deployment
 - [ ] Worker Service Setup
