@@ -1,10 +1,6 @@
 # find-your-bias
 
-## Project Tasks
-
-![progress](https://progress-bar.dev/20/)
-
-## To-Do List
+## Project Progress
 - [x] Add Progress bar1
 - [ ] Vote Microservice Deployment
 - [ ] Result Microservice Deployment
