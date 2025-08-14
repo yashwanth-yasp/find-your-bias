@@ -2,7 +2,7 @@ name: Update README Progress
 
 on:
   workflow_run:
-    workflows: ["CI"] # Must match `name:` in ci.yaml
+    workflows: ["Microservices CI"] 
     types:
       - completed
 
