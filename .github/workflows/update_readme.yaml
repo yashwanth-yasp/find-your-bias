@@ -26,6 +26,7 @@ jobs:
 
       - name: Update README
         run: |
+          python - <<'EOF'
           import re
           import os
 
