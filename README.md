@@ -5,7 +5,7 @@
 ![progress](https://progress-bar.dev/0/)
 
 ## To-Do List
-- [ ] Add Progress bar
+- [ ] Add Progress bar1
 - [ ] Vote Microservice Deployment
 - [ ] Result Microservice Deployment
 - [ ] Worker Service Setup
