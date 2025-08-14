@@ -1,4 +1,4 @@
-name: Microservices CD
+name: Simple CD after CI with DAST
 
 on:
   workflow_run:
@@ -32,32 +32,32 @@ jobs:
           kubectl rollout status deployment/worker
 
       # --- In-Cluster DAST Stage ---
-      - name: Run OWASP ZAP inside Kubernetes
-        run: |
-          echo "Starting OWASP ZAP scan against vote service (port 8080)..."
+      # - name: Run OWASP ZAP inside Kubernetes
+      #   run: |
+      #     echo "Starting OWASP ZAP scan against vote service (port 8080)..."
           
-          # Create a temp ZAP scan pod
-          kubectl run zap-scan \
-            --image=owasp/zap2docker-stable \
-            --restart=Never \
-            --command -- \
-            zap-baseline.py \
-            -t http://vote:8080 \
-            -r /tmp/zap_report.html \
-            -m 5
+      #     # Create a temp ZAP scan pod
+      #     kubectl run zap-scan \
+      #       --image=owasp/zap2docker-stable \
+      #       --restart=Never \
+      #       --command -- \
+      #       zap-baseline.py \
+      #       -t http://vote:8080 \
+      #       -r /tmp/zap_report.html \
+      #       -m 5
 
-          # Wait for pod to complete
-          kubectl wait --for=condition=complete pod/zap-scan --timeout=300s
+      #     # Wait for pod to complete
+      #     kubectl wait --for=condition=complete pod/zap-scan --timeout=300s
 
-          # Copy the report from pod to local
-          kubectl cp zap-scan:/tmp/zap_report.html ./zap_report.html
+      #     # Copy the report from pod to local
+      #     kubectl cp zap-scan:/tmp/zap_report.html ./zap_report.html
 
-          # Cleanup the pod
-          kubectl delete pod zap-scan
+      #     # Cleanup the pod
+      #     kubectl delete pod zap-scan
 
-      - name: Upload DAST Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: dast-report
-          path: zap_report.html
+      # - name: Upload DAST Report
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: dast-report
+      #     path: zap_report.html
 
