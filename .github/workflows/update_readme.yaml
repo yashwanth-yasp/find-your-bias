@@ -2,7 +2,7 @@ name: Update README Progress
 
 on:
   workflow_run:
-    workflows: ["Microservices CI"] # Name of the CI workflow file (from `name:` in ci.yaml)
+    workflows: ["CI"] # Must match `name:` in ci.yaml
     types:
       - completed
 
@@ -31,13 +31,24 @@ jobs:
           import os
 
           commit_message = os.getenv("COMMIT_MSG", "")
+          if "task-done:" not in commit_message.lower():
+              print("No task-done: in commit message. Skipping.")
+              exit(0)
+
+          # Extract task name
           task_name = commit_message.split("task-done:", 1)[1].strip()
 
           readme_path = "README.md"
           with open(readme_path, "r", encoding="utf-8") as f:
               content = f.read()
 
-          # Match unchecked task case-insensitively
+          # Check if already done (case-insensitive)
+          already_done_pattern = rf"- \[x\] {re.escape(task_name)}"
+          if re.search(already_done_pattern, content, flags=re.IGNORECASE):
+              print(f"Task '{task_name}' is already marked done. Skipping update.")
+              exit(0)
+
+          # Match unchecked task case-insensitively and replace
           pattern = rf"- \[ \] {re.escape(task_name)}"
           updated_content = re.sub(
               pattern,
@@ -61,6 +72,11 @@ jobs:
           with open(readme_path, "w", encoding="utf-8") as f:
               f.write(updated_content)
 
+          print(f"Updated task '{task_name}' and progress bar to {progress}%.")
+          EOF
+        env:
+          COMMIT_MSG: ${{ github.event.workflow_run.head_commit.message }}
+
       - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
@@ -68,6 +84,4 @@ jobs:
           git add README.md
           git commit -m "Auto-update task and progress bar" || echo "No changes to commit"
           git push
-        env:
-          COMMIT_MSG: ${{ github.event.workflow_run.head_commit.message }}
 
