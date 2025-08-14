@@ -1,2 +1,12 @@
 # find-your-bias
-This is a fork of dockersamples/examplevotingapp
+
+## Project Tasks
+
+![progress](https://progress-bar.dev/0/)
+
+## To-Do List
+- [ ] Add Progress bar
+- [ ] Vote Microservice Deployment
+- [ ] Result Microservice Deployment
+- [ ] Worker Service Setup
+- [ ] Final Deployment 
