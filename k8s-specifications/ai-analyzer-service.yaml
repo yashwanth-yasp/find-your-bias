@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ai-analyzer
+  name: ai-analyzer
+spec:
+  type: NodePort
+  ports:
+  - name: "ai-analyzer-service"
+    port: 5001
+    targetPort: 5001
+    nodePort: 31002
+  selector:
+    app: ai-analyzer
