@@ -3,8 +3,9 @@ import logging
 import os
 import random
 import socket
+import uuid
 
-from flask import Flask, g, make_response, render_template, request
+from flask import Flask, g, make_response, render_template, request, redirect, url_for
 from redis import Redis
 
 # Configuration from environment variables or defaults
@@ -53,31 +54,40 @@ def hello():
     if not voter_id:
         voter_id = hex(random.getrandbits(64))[2:-1]
 
-    vote = None
+    # Handle room creation
+    if 'new_room' in request.args:
+        room_id = str(uuid.uuid4())
+        return redirect(url_for('hello', room_id=room_id))
+
+    room_id = request.args.get('room_id')
+    if not room_id:
+        # Default to a new room if none is specified
+        return redirect(url_for('hello', new_room='true'))
+
+
+    # Get a random tweet for the user to vote on.
+    # The tweet is stored in a hidden form field to be submitted with the vote.
+    tweet = random.choice(tweets)
 
     # Process POST requests (votes)
     if request.method == "POST":
         redis = get_redis()
         vote = request.form["vote"]
+        room_id = request.form["room_id"]
         tweet = request.form["tweet"]
-        app.logger.info("vote for %s on tweet '%s' from voter_id: %s", vote, tweet, voter_id)
-        data = json.dumps({"voter_id": voter_id, "vote": vote, "tweet": tweet})
+        app.logger.info(f"Received vote for '{vote}' in room '{room_id}' for tweet: '{tweet}'")
+        data = json.dumps({"voter_id": voter_id, "vote": vote, "tweet": tweet, "room_id": room_id})
         redis.rpush("votes", data)  # Push vote data to Redis list
 
-    # Select a random tweet (a single line of text) from the loaded list
-    tweet = random.choice(tweets) if tweets else ""
-
     # Prepare the response and set the voter_id cookie
-    resp = make_response(
-        render_template(
-            "index.html",
-            option_a=option_a,
-            option_b=option_b,
-            hostname=hostname,
-            vote=vote,
-            tweet=tweet,  # Pass the selected tweet string to the template
-        )
-    )
+    resp = make_response(render_template(
+        "index.html",
+        option_a=option_a,
+        option_b=option_b,
+        hostname=hostname,
+        tweet=tweet,
+        room_id=room_id,
+    ))
     resp.set_cookie("voter_id", voter_id)
     return resp
 

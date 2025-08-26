@@ -24,30 +24,34 @@ def get_db_connection():
     )
     return conn
 
-@app.route('/', methods=['GET'])
+@app.route('/analyze', methods=['GET'])
 def analyze_votes():
     """
     Analyzes the voting data by sending it to AWS Bedrock and returns the analysis.
     """
+    room_id = request.args.get('room_id')
+    if not room_id:
+        return jsonify({"error": "room_id parameter is required"}), 400
+
     try:
         # 1. Fetch data from the database
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute("SELECT tweet, vote FROM votes")
+        cur.execute("SELECT tweet, vote FROM votes WHERE room_id = %s", (room_id,))
         votes_data = cur.fetchall()
         cur.close()
         conn.close()
 
         if not votes_data:
-            return jsonify({"analysis": "Not enough data to perform analysis."})
+            return jsonify({"analysis": "Not enough data to perform analysis for this room."})
 
         # 2. Format the data for the prompt
         formatted_votes = "\n".join([f"- Tweet: \"{row[0]}\", Vote: {'Agree' if row[1] == 'a' else 'Disagree'}" for row in votes_data])
         
         prompt = f"""
-Human: Here is a list of votes from users reacting to various tweets. 
+Human: Here is a list of votes from users reacting to various tweets in a specific room. 
 
-Voting Data:
+Voting Data for room {room_id}:
 {formatted_votes}
 
 Based on this data, please provide a concise analysis of the voting audience. Answer the following:

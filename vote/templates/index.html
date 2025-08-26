@@ -25,12 +25,50 @@
         padding: 0;
         font-style: italic;
       }
+
+      /* Styling for room management section */
+      #room-management {
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      #room-management input[type="text"] {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-right: 5px;
+      }
+      #room-management button {
+        padding: 8px 12px;
+        border: none;
+        background-color: #555;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      #room-management button:hover {
+        background-color: #777;
+      }
+      #room-management form {
+        display: inline-block;
+        margin: 0 5px;
+      }
     </style>
   </head>
   <body>
     <div id="content-container">
       <div id="content-container-center">
         <h3>Find your political bias! (center is audience)</h3>
+
+        <div id="room-management">
+          <form method="GET" action="/">
+            <label for="room_id">Room ID:</label>
+            <input type="text" name="room_id" id="room_id" value="{{ room_id }}" required>
+            <button type="submit">Join Room</button>
+          </form>
+          <form method="GET" action="/">
+            <button type="submit" name="new_room" value="true">Create New Room</button>
+          </form>
+        </div>
 
         <!-- This block now displays a single line of text from tweets.txt -->
         {% if tweet %}
@@ -40,6 +78,7 @@
         {% endif %}
 
         <form id="choice" name='form' method="POST" action="/">
+          <input type="hidden" name="room_id" value="{{ room_id }}">
           <input type="hidden" name="tweet" value="{{ tweet }}">
           <button id="a" type="submit" name="vote" class="a" value="a">{{option_a}}</button>
           <button id="b" type="submit" name="vote" class="b" value="b">{{option_b}}</button>

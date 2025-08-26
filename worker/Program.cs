@@ -25,7 +25,7 @@ namespace Worker
                 var keepAliveCommand = pgsql.CreateCommand();
                 keepAliveCommand.CommandText = "SELECT 1";
 
-                var definition = new { vote = "", voter_id = "", tweet = "" };
+                var definition = new { vote = "", voter_id = "", tweet = "", room_id = "" };
                 while (true)
                 {
                     // Slow down to prevent CPU spike, only query each 100ms
@@ -41,7 +41,7 @@ namespace Worker
                     if (json != null)
                     {
                         var vote = JsonConvert.DeserializeAnonymousType(json, definition);
-                        Console.WriteLine($"Processing vote for '{vote.vote}' by '{vote.voter_id}' on tweet '{vote.tweet}'");
+                        Console.WriteLine($"Processing vote for '{vote.vote}' by '{vote.voter_id}' in room '{vote.room_id}' on tweet '{vote.tweet}'");
                         // Reconnect DB if down
                         if (!pgsql.State.Equals(System.Data.ConnectionState.Open))
                         {
@@ -49,13 +49,10 @@ namespace Worker
                             pgsql = OpenDbConnection("Server=db;Username=postgres;Password=postgres;");
                         }
                         else
-                        { // Normal +1 vote requested
-                            UpdateVote(pgsql, vote.voter_id, vote.vote, vote.tweet);
+                        {
+                            keepAliveCommand.ExecuteNonQuery();
                         }
-                    }
-                    else
-                    {
-                        keepAliveCommand.ExecuteNonQuery();
+                        UpdateVote(pgsql, vote.voter_id, vote.vote, vote.tweet, vote.room_id);
                     }
                 }
             }
@@ -76,6 +73,17 @@ namespace Worker
                 {
                     connection = new NpgsqlConnection(connectionString);
                     connection.Open();
+
+                    var command = connection.CreateCommand();
+                    command.CommandText = @"CREATE TABLE IF NOT EXISTS votes (
+                                                id       SERIAL PRIMARY KEY,
+                                                vote     VARCHAR(255) NOT NULL,
+                                                voter_id VARCHAR(255) NOT NULL,
+                                                tweet    VARCHAR(255),
+                                                room_id  VARCHAR(50)
+                                            );";
+                    command.ExecuteNonQuery();
+
                     break;
                 }
                 catch (SocketException)
@@ -91,14 +99,6 @@ namespace Worker
             }
 
             Console.Error.WriteLine("Connected to db");
-
-            var command = connection.CreateCommand();
-            command.CommandText = @"CREATE TABLE IF NOT EXISTS votes (
-                                        id VARCHAR(255) NOT NULL UNIQUE,
-                                        vote VARCHAR(255) NOT NULL,
-                                        tweet VARCHAR(255)
-                                    )";
-            command.ExecuteNonQuery();
 
             return connection;
         }
@@ -124,27 +124,27 @@ namespace Worker
             }
         }
 
-        private static string GetIp(string hostname)
+        private static IPAddress GetIp(string hostname)
             => Dns.GetHostEntryAsync(hostname)
                 .Result
                 .AddressList
-                .First(a => a.AddressFamily == AddressFamily.InterNetwork)
-                .ToString();
+                .First(a => a.AddressFamily == AddressFamily.InterNetwork);
 
-        private static void UpdateVote(NpgsqlConnection connection, string voterId, string vote, string tweet)
+        private static void UpdateVote(NpgsqlConnection connection, string voterId, string vote, string tweet, string roomId)
         {
             var command = connection.CreateCommand();
             try
             {
-                command.CommandText = "INSERT INTO votes (id, vote, tweet) VALUES (@id, @vote, @tweet)";
-                command.Parameters.AddWithValue("@id", voterId);
+                command.CommandText = "INSERT INTO votes (voter_id, vote, tweet, room_id) VALUES (@voterId, @vote, @tweet, @roomId)";
+                command.Parameters.AddWithValue("@voterId", voterId);
                 command.Parameters.AddWithValue("@vote", vote);
                 command.Parameters.AddWithValue("@tweet", tweet);
+                command.Parameters.AddWithValue("@roomId", roomId);
                 command.ExecuteNonQuery();
             }
             catch (DbException)
             {
-                command.CommandText = "UPDATE votes SET vote = @vote, tweet = @tweet WHERE id = @id";
+                command.CommandText = "UPDATE votes SET vote = @vote, tweet = @tweet, room_id = @roomId WHERE voter_id = @voterId";
                 command.ExecuteNonQuery();
             }
             finally

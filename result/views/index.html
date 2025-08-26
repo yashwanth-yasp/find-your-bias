@@ -12,7 +12,7 @@
   <body ng-controller="statsCtrl" >
     <div id="content-container">
       <div id="content-container-center">
-        <h1>Live Vote Stream</h1>
+        <h1>Live Vote Stream for Room: {{ room_id }}</h1>
         <button id="ai-button" ng-click="getAnalysis()">Get AI Analysis</button>
         <div id="results-table">
           <table>
@@ -35,6 +35,10 @@
         <div id="ai-analysis" ng-if="analysis">
           <h2>AI Analysis</h2>
           <pre>{{ analysis }}</pre>
+        </div>
+        <div ng-if="!room_id" class="no-room-message">
+            <h2>Please specify a room ID in the URL.</h2>
+            <p>Example: <code>?room_id=your-room-id</code></p>
         </div>
       </div>
     </div>

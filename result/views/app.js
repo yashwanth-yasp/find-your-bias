@@ -5,6 +5,7 @@ app.controller('statsCtrl', function($scope, $http){
   $scope.votes = [];
   $scope.total = 0;
   $scope.analysis = null;
+  $scope.room_id = new URLSearchParams(window.location.search).get('room_id');
 
   var updateScores = function(){
     socket.on('scores', function (json) {
@@ -16,9 +17,13 @@ app.controller('statsCtrl', function($scope, $http){
   };
 
   $scope.getAnalysis = function() {
+    if (!$scope.room_id) {
+        $scope.analysis = "No room specified. Please join a room to get an analysis.";
+        return;
+    }
     $scope.analysis = "Loading AI analysis...";
     var host = window.location.hostname;
-    var url = "http://" + host + ":31002/";
+    var url = "http://" + host + ":31002/analyze?room_id=" + $scope.room_id;
     
     $http.get(url).then(function(response) {
         $scope.analysis = response.data.analysis;
@@ -29,7 +34,10 @@ app.controller('statsCtrl', function($scope, $http){
 
   var init = function(){
     document.body.style.opacity=1;
-    updateScores();
+    if ($scope.room_id) {
+        socket.emit('subscribe', { channel: $scope.room_id });
+        updateScores();
+    }
   };
   socket.on('message',function(data){
     init();
