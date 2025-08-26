@@ -207,3 +207,8 @@ td:nth-child(3) {
   margin-top: 0;
   color: #254356;
 }
+
+#ai-analysis pre {
+  white-space: pre-wrap;   /* preserves newlines but allows wrapping */
+  word-wrap: break-word;   /* breaks long words */
+  overflow-wrap: break-word;
