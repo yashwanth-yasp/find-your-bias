@@ -18,7 +18,7 @@ app.controller('statsCtrl', function($scope, $http){
   $scope.getAnalysis = function() {
     $scope.analysis = "Loading AI analysis...";
     var host = window.location.hostname;
-    var url = "http://" + host + ":31002";
+    var url = "http://" + host + ":31002/";
     
     $http.get(url).then(function(response) {
         $scope.analysis = response.data.analysis;
