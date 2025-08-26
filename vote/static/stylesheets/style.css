@@ -127,3 +127,27 @@ button.b{
   width:50%;
   height:100%;
 }
+
+#view-results {
+  margin-top: 20px;
+}
+
+.button-results {
+  display: inline-block;
+  height: 50px;
+  width: 330px;
+  padding: 0 50px;
+  border: none;
+  background-color: #254356;
+  color: white;
+  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  line-height: 50px;
+}
+
+.button-results:hover {
+  background-color: #1d3545;
+}

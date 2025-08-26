@@ -49,10 +49,21 @@
         <div id="hostname">
           Processed by container ID {{hostname}}
         </div>
+        <div id="view-results">
+          <a id="results-link" href="#" class="button-results">View Results</a>
+        </div>
       </div>
     </div>
-    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+    <script>
+      var resultsLink = document.getElementById('results-link');
+      if (resultsLink) {
+        var currentHost = window.location.hostname;
+        resultsLink.href = 'http://' + currentHost + ':31001';
+      }
+    </script>
 
     {% if vote %}
     <script>
