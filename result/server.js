@@ -41,7 +41,7 @@ async.retry(
 
 function getVotes(client) {
   client.query(
-    "SELECT vote, COUNT(id) AS count FROM votes GROUP BY vote",
+    "SELECT id, vote, tweet FROM votes ORDER BY id DESC",
     [],
     function (err, result) {
       if (err) {
@@ -59,13 +59,13 @@ function getVotes(client) {
 }
 
 function collectVotesFromResult(result) {
-  var votes = { a: 0, b: 0 };
-
-  result.rows.forEach(function (row) {
-    votes[row.vote] = parseInt(row.count);
+  return result.rows.map(function(row) {
+    return {
+      id: row.id,
+      tweet: row.tweet,
+      vote: row.vote === 'a' ? 'Agree' : 'Disagree'
+    };
   });
-
-  return votes;
 }
 
 app.use(cookieParser());

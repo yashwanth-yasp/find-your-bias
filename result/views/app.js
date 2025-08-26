@@ -1,29 +1,28 @@
 var app = angular.module('findyourbias', []);
 var socket = io.connect();
 
-var bg1 = document.getElementById('background-stats-1');
-var bg2 = document.getElementById('background-stats-2');
-
-app.controller('statsCtrl', function($scope){
-  $scope.aPercent = 50;
-  $scope.bPercent = 50;
+app.controller('statsCtrl', function($scope, $http){
+  $scope.votes = [];
+  $scope.total = 0;
+  $scope.analysis = null;
 
   var updateScores = function(){
     socket.on('scores', function (json) {
-       data = JSON.parse(json);
-       var a = parseInt(data.a || 0);
-       var b = parseInt(data.b || 0);
-
-       var percentages = getPercentages(a, b);
-
-       bg1.style.width = percentages.a + "%";
-       bg2.style.width = percentages.b + "%";
-
        $scope.$apply(function () {
-         $scope.aPercent = percentages.a;
-         $scope.bPercent = percentages.b;
-         $scope.total = a + b;
+         $scope.votes = JSON.parse(json);
+         $scope.total = $scope.votes.length;
        });
+    });
+  };
+
+  $scope.getAnalysis = function() {
+    $scope.analysis = "Loading AI analysis...";
+    // This will eventually hit your AI microservice endpoint
+    // For now, we'll just simulate a delay and a response
+    $http.get("http://localhost:5001/analyze").then(function(response) {
+        $scope.analysis = response.data;
+    }).catch(function() {
+        $scope.analysis = "Failed to get analysis. Is the AI service running?";
     });
   };
 
@@ -35,16 +34,3 @@ app.controller('statsCtrl', function($scope){
     init();
   });
 });
-
-function getPercentages(a, b) {
-  var result = {};
-
-  if (a + b > 0) {
-    result.a = Math.round(a / (a + b) * 100);
-    result.b = 100 - result.a;
-  } else {
-    result.a = result.b = 50;
-  }
-
-  return result;
-}

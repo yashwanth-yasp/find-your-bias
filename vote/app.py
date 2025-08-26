@@ -8,7 +8,7 @@ from flask import Flask, g, make_response, render_template, request
 from redis import Redis
 
 # Configuration from environment variables or defaults
-option_a = os.getenv("OPTION_A", "Agree ah")
+option_a = os.getenv("OPTION_A", "Agree ohhh")
 option_b = os.getenv("OPTION_B", "Disagree change")
 hostname = socket.gethostname()
 
@@ -59,8 +59,9 @@ def hello():
     if request.method == "POST":
         redis = get_redis()
         vote = request.form["vote"]
-        app.logger.info("vote for %s from voter_id: %s", vote, voter_id)
-        data = json.dumps({"voter_id": voter_id, "vote": vote})
+        tweet = request.form["tweet"]
+        app.logger.info("vote for %s on tweet '%s' from voter_id: %s", vote, tweet, voter_id)
+        data = json.dumps({"voter_id": voter_id, "vote": vote, "tweet": tweet})
         redis.rpush("votes", data)  # Push vote data to Redis list
 
     # Select a random tweet (a single line of text) from the loaded list
