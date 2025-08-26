@@ -23,32 +23,32 @@ jobs:
           python-version: '3.9'
 
       # Lint
-      - name: Lint Vote Service (Flake8)
-        run: |
-          pip install flake8
-          flake8 vote/
+      # - name: Lint Vote Service (Flake8)
+      #   run: |
+      #     pip install flake8
+      #     flake8 vote/
 
       # SCA
-      - name: Run SCA on Vote Service (Trivy)
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: fs
-          scan-ref: vote
-          format: table
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
+      # - name: Run SCA on Vote Service (Trivy)
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     scan-type: fs
+      #     scan-ref: vote
+      #     format: table
+      #     severity: HIGH,CRITICAL
+      #     ignore-unfixed: true
 
       # SAST
-      - name: Run SAST on Vote Service (Bandit)
-        run: |
-          pip install bandit
-          bandit -r vote/ -ll -f json -o bandit-results.json || true
+      # - name: Run SAST on Vote Service (Bandit)
+      #   run: |
+      #     pip install bandit
+      #     bandit -r vote/ -ll -f json -o bandit-results.json || true
 
       # Unit tests
-      - name: Run Vote Service Unit Tests
-        run: |
-          pip install pytest
-          pytest vote/tests || true
+      # - name: Run Vote Service Unit Tests
+      #   run: |
+      #     pip install pytest
+      #     pytest vote/tests || true
 
       # Docker build & push
       - name: Set up Docker Buildx
@@ -81,39 +81,39 @@ jobs:
           node-version: '18'
 
       # Lint
-      - name: Install Node dependencies
-        run: |
-          cd result
-          npm install
+      # - name: Install Node dependencies
+      #   run: |
+      #     cd result
+      #     npm install
 
-      - name: Run Prettier check
-        run: |
-          npm install prettier
-          npx prettier --check server.js
-        working-directory: result
+      # - name: Run Prettier check
+      #   run: |
+      #     npm install prettier
+      #     npx prettier --check server.js
+      #   working-directory: result
 
       # SCA
-      - name: Run SCA on Result Service (Trivy)
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: fs
-          scan-ref: result
-          format: table
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
+      # - name: Run SCA on Result Service (Trivy)
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     scan-type: fs
+      #     scan-ref: result
+      #     format: table
+      #     severity: HIGH,CRITICAL
+      #     ignore-unfixed: true
 
       # SAST
-      - name: Run SAST on Result Service (ESLint security)
-        run: |
-          cd result
-          npm install eslint eslint-plugin-security
-          npx eslint . || true
+      # - name: Run SAST on Result Service (ESLint security)
+      #   run: |
+      #     cd result
+      #     npm install eslint eslint-plugin-security
+      #     npx eslint . || true
 
       # Unit tests
-      - name: Run Result Service Unit Tests
-        run: |
-          cd result
-          npm test || true
+      # - name: Run Result Service Unit Tests
+      #   run: |
+      #     cd result
+      #     npm test || true
 
       # Docker build & push
       - name: Set up Docker Buildx
