@@ -17,12 +17,13 @@ app.controller('statsCtrl', function($scope, $http){
 
   $scope.getAnalysis = function() {
     $scope.analysis = "Loading AI analysis...";
-    // This will eventually hit your AI microservice endpoint
-    // For now, we'll just simulate a delay and a response
-    $http.get("http://localhost:5001/analyze").then(function(response) {
-        $scope.analysis = response.data;
+    var host = window.location.hostname;
+    var url = "http://" + host + ":31002";
+    
+    $http.get(url).then(function(response) {
+        $scope.analysis = response.data.analysis;
     }).catch(function() {
-        $scope.analysis = "Failed to get analysis. Is the AI service running?";
+        $scope.analysis = "Failed to get analysis. Is the AI service running at " + url + "?";
     });
   };
 
