@@ -24,10 +24,12 @@ jobs:
           kubectl set image deployment/vote vote=${{ secrets.DOCKER_HUB_USERNAME }}/vote-find-your-bias:${{ github.event.workflow_run.head_sha }}
           kubectl set image deployment/result result=${{ secrets.DOCKER_HUB_USERNAME }}/result-find-your-bias:${{ github.event.workflow_run.head_sha }}
           kubectl set image deployment/worker worker=${{ secrets.DOCKER_HUB_USERNAME }}/worker-find-your-bias:${{ github.event.workflow_run.head_sha }}
+          kubectl set image deployment/ai-analyzer ai-analyzer=${{ secrets.DOCKER_HUB_USERNAME }}/ai-analyzer-find-your-bias:${{ github.event.workflow_run.head_sha }}
 
           kubectl rollout status deployment/vote
           kubectl rollout status deployment/result
           kubectl rollout status deployment/worker
+          kubectl rollout status deployment/ai-analyzer
 
       # --- In-Cluster DAST Stage ---
       # - name: Run OWASP ZAP inside Kubernetes
