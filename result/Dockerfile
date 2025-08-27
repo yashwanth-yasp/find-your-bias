@@ -7,22 +7,17 @@ RUN apt-get update && \
 
 WORKDIR /usr/src/app
 
-# Copy only package files first (better layer caching)
+# Copy package files + install deps + copy source + create user + set ownership
 COPY package*.json ./
-
-# Install only production deps
-RUN npm ci --only=production && npm cache clean --force
-
-# Copy app source
 COPY . .
 
-# Create non-root user for security
-RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser && \
+RUN npm ci --only=production && npm cache clean --force && \
+    addgroup --system appgroup && adduser --system --ingroup appgroup appuser && \
     chown -R appuser:appgroup /usr/src/app
 USER appuser
 
-ENV NODE_ENV=production
-ENV PORT=3000
+ENV NODE_ENV=production \
+    PORT=3000
 EXPOSE 3000
 
 # Single entrypoint (no CMD)
