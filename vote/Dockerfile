@@ -57,5 +57,5 @@ EXPOSE 80
 # HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 #   CMD curl --fail http://localhost:80/ || exit 1
 
-# Start Gunicorn
-CMD ["gunicorn", "app:app", "-b", "0.0.0.0:8080", "--workers=4", "--threads=2", "--keep-alive=120", "--log-level=info"]
+# Start Gunicorn as entrypoint 
+ENTRYPOINT ["gunicorn","app:app", "-b", "0.0.0.0:8080"]
