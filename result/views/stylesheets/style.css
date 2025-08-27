@@ -207,3 +207,26 @@ td:nth-child(3) {
   margin-top: 0;
   color: #254356;
 }
+
+#ai-analysis pre {
+  white-space: pre-wrap;   /* preserves newlines but allows wrapping */
+  word-wrap: break-word;   /* breaks long words */
+  overflow-wrap: break-word;
+}
+
+.no-room-message {
+  margin-top: 50px;
+  text-align: center;
+  color: #888;
+}
+
+.no-room-message h2 {
+  color: #555;
+}
+
+.no-room-message code {
+  background-color: #eee;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+}
