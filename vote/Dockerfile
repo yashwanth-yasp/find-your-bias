@@ -1,32 +1,47 @@
-# base defines a base stage that uses the official python runtime base image
-FROM python:3.11-slim AS base
+# Build Stage
+FROM python:3.11-slim AS builder
 
-# Add curl for healthcheck
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /usr/src/app
+
+# Install build deps + install wheels
+COPY requirements.txt .
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl && \
+    apt-get install -y --no-install-recommends build-essential gcc && \
+    pip install --upgrade pip && \
+    pip wheel --no-cache-dir --no-deps -r requirements.txt -w /wheels && \
+    apt-get purge -y build-essential gcc && \
+    apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
-# Set the application directory
+# Runtime Stage
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="/home/appuser/.local/bin:$PATH"
+
 WORKDIR /usr/local/app
 
-# Install our requirements.txt
-COPY requirements.txt ./requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Install runtime deps + create user
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends libpq-dev && \
+    rm -rf /var/lib/apt/lists/* && \
+    useradd -ms /bin/bash appuser
 
-# dev defines a stage for development, where it'll watch for filesystem changes
-FROM base AS dev
-RUN pip install watchdog
-ENV FLASK_ENV=development
-CMD ["python", "app.py"]
-
-# final defines the stage that will bundle the application for production
-FROM base AS final
-
-# Copy our code from the current folder to the working directory inside the container
+# Copy wheels and app source code together
+COPY --from=builder /wheels /wheels
 COPY . .
 
-# Make port 80 available for links and/or publish
-EXPOSE 80
+# Install wheels + set ownership in one layer
+RUN pip install --no-cache /wheels/* && \
+    rm -rf /wheels && \
+    chown -R appuser:appuser /usr/local/app
 
-# Define our command to be run when launching the container
-CMD ["gunicorn", "app:app", "-b", "0.0.0.0:80", "--log-file", "-", "--access-logfile", "-", "--workers", "4", "--keep-alive", "0"]
+USER appuser
+
+EXPOSE 8080
+
+ENTRYPOINT ["gunicorn", "app:app", "-b", "0.0.0.0:8080"]
