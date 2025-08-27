@@ -58,4 +58,4 @@ EXPOSE 80
 #   CMD curl --fail http://localhost:80/ || exit 1
 
 # Start Gunicorn
-CMD ["gunicorn", "app:app", "-b", "0.0.0.0:80", "--workers=4", "--threads=2", "--keep-alive=120", "--log-level=info"]
+CMD ["gunicorn", "app:app", "-b", "0.0.0.0:8080", "--workers=4", "--threads=2", "--keep-alive=120", "--log-level=info"]
