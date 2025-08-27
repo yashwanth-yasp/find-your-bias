@@ -33,7 +33,7 @@ def analyze_votes():
         # 1. Fetch data from the database
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute("SELECT tweet, vote FROM votes")
+        cur.execute("SELECT tweet, vote FROM votes WHERE created_at > NOW() - INTERVAL '10 minutes'")
         votes_data = cur.fetchall()
         cur.close()
         conn.close()

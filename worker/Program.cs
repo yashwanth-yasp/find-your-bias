@@ -96,7 +96,8 @@ namespace Worker
             command.CommandText = @"CREATE TABLE IF NOT EXISTS votes (
                                         id VARCHAR(255) NOT NULL UNIQUE,
                                         vote VARCHAR(255) NOT NULL,
-                                        tweet VARCHAR(255)
+                                        tweet VARCHAR(255),
+                                        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
                                     )";
             command.ExecuteNonQuery();
 
@@ -144,7 +145,7 @@ namespace Worker
             }
             catch (DbException)
             {
-                command.CommandText = "UPDATE votes SET vote = @vote, tweet = @tweet WHERE id = @id";
+                command.CommandText = "UPDATE votes SET vote = @vote, tweet = @tweet, created_at = CURRENT_TIMESTAMP WHERE id = @id";
                 command.ExecuteNonQuery();
             }
             finally

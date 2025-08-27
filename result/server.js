@@ -41,7 +41,7 @@ async.retry(
 
 function getVotes(client) {
   client.query(
-    "SELECT id, vote, tweet FROM votes ORDER BY id DESC",
+    "SELECT id, vote, tweet FROM votes WHERE created_at > NOW() - INTERVAL '10 minutes' ORDER BY created_at DESC",
     [],
     function (err, result) {
       if (err) {
