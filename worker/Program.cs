@@ -135,17 +135,24 @@ namespace Worker
             var command = connection.CreateCommand();
             try
             {
-                command.CommandText = "INSERT INTO votes (voter_id, vote, tweet, room_id) VALUES (@voterId, @vote, @tweet, @roomId)";
+                // First, try to update an existing vote
+                command.CommandText = "UPDATE votes SET vote = @vote, tweet = @tweet, room_id = @roomId WHERE voter_id = @voterId";
                 command.Parameters.AddWithValue("@voterId", voterId);
                 command.Parameters.AddWithValue("@vote", vote);
                 command.Parameters.AddWithValue("@tweet", tweet);
                 command.Parameters.AddWithValue("@roomId", roomId);
-                command.ExecuteNonQuery();
+                var rows = command.ExecuteNonQuery();
+
+                // If no rows were updated, it means the voter_id doesn't exist, so insert a new one
+                if (rows == 0)
+                {
+                    command.CommandText = "INSERT INTO votes (voter_id, vote, tweet, room_id) VALUES (@voterId, @vote, @tweet, @roomId)";
+                    command.ExecuteNonQuery();
+                }
             }
-            catch (DbException)
+            catch (DbException ex)
             {
-                command.CommandText = "UPDATE votes SET vote = @vote, tweet = @tweet, room_id = @roomId WHERE voter_id = @voterId";
-                command.ExecuteNonQuery();
+                Console.Error.WriteLine($"Error updating/inserting vote: {ex.Message}");
             }
             finally
             {
