@@ -1,61 +1,47 @@
-
-# ========================
-# Stage 1: Build dependencies
-# ========================
+# Build Stage
 FROM python:3.11-slim AS builder
 
-# Set environment variables for Python
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-# Install system dependencies (e.g., gcc for building wheels)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential gcc \
-    && rm -rf /var/lib/apt/lists/*
-
 WORKDIR /usr/src/app
 
-# Install Python dependencies in a separate layer for caching
+# Install build deps + install wheels
 COPY requirements.txt .
-RUN pip install --upgrade pip \
-    && pip wheel --no-cache-dir --no-deps -r requirements.txt -w /wheels
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends build-essential gcc && \
+    pip install --upgrade pip && \
+    pip wheel --no-cache-dir --no-deps -r requirements.txt -w /wheels && \
+    apt-get purge -y build-essential gcc && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
 
-# ========================
-# Stage 2: Final runtime image
-# ========================
+# Runtime Stage
 FROM python:3.11-slim
 
-# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/home/appuser/.local/bin:$PATH"
 
-# Install runtime dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-# Create a non-root user
-RUN useradd -ms /bin/bash appuser
 WORKDIR /usr/local/app
 
-# Copy wheels from builder stage and install
-COPY --from=builder /wheels /wheels
-RUN pip install --no-cache /wheels/*
+# Install runtime deps + create user
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends libpq-dev && \
+    rm -rf /var/lib/apt/lists/* && \
+    useradd -ms /bin/bash appuser
 
-# Copy app source code
+# Copy wheels and app source code together
+COPY --from=builder /wheels /wheels
 COPY . .
 
-# Change ownership to non-root user
-RUN chown -R appuser:appuser /usr/local/app
+# Install wheels + set ownership in one layer
+RUN pip install --no-cache /wheels/* && \
+    rm -rf /wheels && \
+    chown -R appuser:appuser /usr/local/app
+
 USER appuser
 
-# Expose application port
-EXPOSE 80
+EXPOSE 8080
 
-# # Healthcheck for container orchestration systems
-# HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-#   CMD curl --fail http://localhost:80/ || exit 1
-
-# Start Gunicorn as entrypoint 
-ENTRYPOINT ["gunicorn","app:app", "-b", "0.0.0.0:8080"]
+ENTRYPOINT ["gunicorn", "app:app", "-b", "0.0.0.0:8080"]
