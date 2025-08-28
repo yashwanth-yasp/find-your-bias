@@ -101,6 +101,11 @@ namespace Worker
                                     )";
             command.ExecuteNonQuery();
 
+            // ✅ Ensure created_at column exists
+            var checkColumn = connection.CreateCommand();
+            checkColumn.CommandText = "ALTER TABLE votes ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP";
+            checkColumn.ExecuteNonQuery();
+
             return connection;
         }
 
