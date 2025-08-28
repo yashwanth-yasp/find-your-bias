@@ -24,3 +24,4 @@ ENV NODE_ENV=production \
 EXPOSE 80
 
 ENTRYPOINT ["/usr/bin/tini", "--", "node", "server.js"]
+
