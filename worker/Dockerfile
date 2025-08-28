@@ -1,7 +1,6 @@
-# ---------------------------------------------------------
+
 # STAGE 1: Build the application
-# ---------------------------------------------------------
-# Always build on amd64 unless you override with --platform
+
 FROM --platform=${BUILDPLATFORM} mcr.microsoft.com/dotnet/sdk:7.0 AS build
 
 # Optional build-time args for logging/debug
@@ -23,24 +22,21 @@ COPY . ./
 RUN dotnet publish -c Release -o /app -a ${TARGETARCH} --self-contained false --no-restore
 
 
-# ---------------------------------------------------------
+
 # STAGE 2: Runtime image (minimal & secure)
-# ---------------------------------------------------------
 FROM mcr.microsoft.com/dotnet/runtime:7.0
 
-# Always use a non-root user in production
-# (1000 is arbitrary, you can match Kubernetes/OpenShift guidelines)
+# Using a non root user for better security 
 RUN useradd -m appuser
 USER appuser
 
 WORKDIR /app
 COPY --from=build /app .
 
-# Optional: environment variables (can be overridden at runtime)
+# environment variables (can be overridden at runtime)
 ENV DOTNET_EnableDiagnostics=0 \
     DOTNET_GCHeapHardLimit=0 \
     DOTNET_GCHeapHardLimitPercent=75 \
     DOTNET_GCTieredCompilation=1
 
-# ENTRYPOINT is strict: always run the worker
 ENTRYPOINT ["dotnet", "Worker.dll"]
