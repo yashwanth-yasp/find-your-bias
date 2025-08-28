@@ -6,7 +6,6 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /usr/src/app
 
-# Install build deps + install wheels
 COPY requirements.txt .
 RUN apt-get update && \
     apt-get install -y --no-install-recommends build-essential gcc && \
@@ -27,21 +26,22 @@ WORKDIR /usr/local/app
 
 # Install runtime deps + create user
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends libpq-dev && \
+    apt-get install -y --no-install-recommends libpq-dev libcap2-bin && \
     rm -rf /var/lib/apt/lists/* && \
     useradd -ms /bin/bash appuser
 
-# Copy wheels and app source code together
+# Copy wheels and app source code
 COPY --from=builder /wheels /wheels
 COPY . .
 
-# Install wheels + set ownership in one layer
+# Install wheels + set ownership
 RUN pip install --no-cache /wheels/* && \
     rm -rf /wheels && \
-    chown -R appuser:appuser /usr/local/app
+    chown -R appuser:appuser /usr/local/app && \
+    setcap 'cap_net_bind_service=+ep' /usr/local/bin/python3.11
 
 USER appuser
 
-EXPOSE 8080
+EXPOSE 80
 
-ENTRYPOINT ["gunicorn", "app:app", "-b", "0.0.0.0:8080"]
+ENTRYPOINT ["gunicorn", "app:app", "-b", "0.0.0.0:80"]
