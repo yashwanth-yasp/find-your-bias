@@ -1,10 +1,11 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
+  name: db
   labels:
     app: db
-  name: db
 spec:
+  serviceName: "db-service"
   replicas: 1
   selector:
     matchLabels:
@@ -22,12 +23,15 @@ spec:
           value: postgres
         - name: POSTGRES_PASSWORD
           value: postgres
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
         ports:
         - containerPort: 5432
           name: postgres
         volumeMounts:
-        - mountPath: /var/lib/postgresql/data
-          name: db-data
+        - name: db-data
+          mountPath: /var/lib/postgresql/data
       volumes:
       - name: db-data
-        emptyDir: {} 
+        persistentVolumeClaim:
+          claimName: db-pvc 
