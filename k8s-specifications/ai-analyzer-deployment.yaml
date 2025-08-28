@@ -15,7 +15,7 @@ spec:
         app: ai-analyzer
     spec:
       containers:
-      - image: yashwanth-yasp/ai-analyzer-find-your-bias:latest # IMPORTANT: Replace 'latest' with the specific image tag from your CI build
+      - image: deadvexon/ai-analyzer-find-your-bias:v1 
         name: ai-analyzer
         env:
         - name: AWS_REGION
