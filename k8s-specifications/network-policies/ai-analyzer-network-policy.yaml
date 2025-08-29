@@ -10,7 +10,8 @@ spec:
   - Ingress
   - Egress
   ingress:
-  - podSelector:
+  - from:
+    - podSelector:
         matchLabels:
           app: result
     ports:
