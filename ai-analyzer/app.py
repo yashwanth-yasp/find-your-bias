@@ -86,6 +86,10 @@ Assistant:
              return jsonify({"error": "AWS credentials are not configured correctly or lack permissions for Bedrock."}), 403
         return jsonify({"error": "An internal error occurred while analyzing the votes."}), 500
 
+@app.route("/health", methods=['GET'])
+def health_check():
+    return jsonify(status="ok"), 200
+
 if __name__ == '__main__':
     # The app runs on port 5001 to avoid conflicts with other services
     app.run(host='0.0.0.0', port=5001, debug=True)
