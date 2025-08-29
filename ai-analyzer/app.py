@@ -29,6 +29,7 @@ def analyze_votes():
     """
     Analyzes the voting data by sending it to AWS Bedrock and returns the analysis.
     """
+    print("result reached ai-analyzer")
     try:
         # 1. Fetch data from the database
         conn = get_db_connection()
@@ -85,6 +86,10 @@ Assistant:
         if "AccessDeniedException" in str(e):
              return jsonify({"error": "AWS credentials are not configured correctly or lack permissions for Bedrock."}), 403
         return jsonify({"error": "An internal error occurred while analyzing the votes."}), 500
+
+@app.route("/health", methods=['GET'])
+def health_check():
+    return jsonify(status="ok"), 200
 
 if __name__ == '__main__':
     # The app runs on port 5001 to avoid conflicts with other services

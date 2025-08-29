@@ -2,7 +2,7 @@ FROM node:18-slim
 
 # Install tini + libcap
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends tini libcap2-bin && \
+    apt-get install -y --no-install-recommends tini libcap2-bin curl && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
