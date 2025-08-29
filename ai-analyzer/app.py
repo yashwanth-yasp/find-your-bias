@@ -29,6 +29,7 @@ def analyze_votes():
     """
     Analyzes the voting data by sending it to AWS Bedrock and returns the analysis.
     """
+    print("result reached ai-analyzer")
     try:
         # 1. Fetch data from the database
         conn = get_db_connection()
