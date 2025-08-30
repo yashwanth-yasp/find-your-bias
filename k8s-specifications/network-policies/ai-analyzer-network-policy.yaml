@@ -11,8 +11,9 @@ spec:
   - Egress
   ingress:
   - from:
-    - ipBlock:
-        cidr: 0.0.0.0/0
+    - podSelector:
+        matchLabels:
+          app: result
     ports:
     - protocol: TCP
       port: 5001

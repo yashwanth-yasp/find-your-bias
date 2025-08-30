@@ -5,11 +5,10 @@ metadata:
     app: ai-analyzer
   name: ai-analyzer
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
   - name: "ai-analyzer-service"
     port: 5001
     targetPort: 5001
-    nodePort: 31002
   selector:
     app: ai-analyzer
