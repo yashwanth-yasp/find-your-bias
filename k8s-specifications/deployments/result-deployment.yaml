@@ -21,3 +21,8 @@ spec:
         ports:
         - containerPort: 80
           name: result
+        resources:
+          requests:
+            cpu: "100m"
+          limits:
+            cpu: "200m"

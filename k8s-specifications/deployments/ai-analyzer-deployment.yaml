@@ -33,3 +33,8 @@ spec:
         ports:
         - containerPort: 5001
           name: ai-analyzer
+        resources:
+          requests:
+            cpu: "100m"
+          limits:
+            cpu: "200m"
