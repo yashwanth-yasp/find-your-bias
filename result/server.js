@@ -4,7 +4,8 @@ var express = require("express"),
   cookieParser = require("cookie-parser"),
   app = express(),
   server = require("http").Server(app),
-  io = require("socket.io")(server);
+  io = require("socket.io")(server),
+  axios = require('axios');
 
 var port = process.env.PORT || 4000;
 
@@ -74,6 +75,17 @@ app.use(express.static(__dirname + "/views"));
 
 app.get("/", function (req, res) {
   res.sendFile(path.resolve(__dirname + "/views/index.html"));
+});
+
+app.get("/api/analyze", async (req, res) => {
+  try {
+    const aiAnalyzerService = 'http://ai-analyzer:5001';
+    const response = await axios.get(aiAnalyzerService);
+    res.send(response.data);
+  } catch (error) {
+    console.error("Error calling AI analyzer service:", error);
+    res.status(500).send("Error calling AI analyzer service");
+  }
 });
 
 server.listen(port, function () {

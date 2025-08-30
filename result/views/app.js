@@ -17,13 +17,13 @@ app.controller('statsCtrl', function($scope, $http){
 
   $scope.getAnalysis = function() {
     $scope.analysis = "Loading AI analysis...";
-    var host = window.location.hostname;
-    var url = "http://" + host + ":31002/";
+    var url = "/api/analyze";
     
     $http.get(url).then(function(response) {
         $scope.analysis = response.data.analysis;
-    }).catch(function() {
-        $scope.analysis = "Failed to get analysis. Is the AI service running at " + url + "?";
+    }).catch(function(error) {
+        console.error("Error fetching analysis:", error);
+        $scope.analysis = "Failed to get analysis. Could not reach the backend.";
     });
   };
 
