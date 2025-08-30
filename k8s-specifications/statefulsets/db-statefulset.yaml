@@ -16,8 +16,8 @@ spec:
         app: db
     spec:
       containers:
-      - image: postgres:15-alpine
-        name: postgres
+      - name: postgres
+        image: postgres:15-alpine
         env:
         - name: POSTGRES_USER
           value: postgres
@@ -31,7 +31,23 @@ spec:
         volumeMounts:
         - name: db-data
           mountPath: /var/lib/postgresql/data
+        livenessProbe:
+          exec:
+            command:
+            - "pg_isready"
+            - "-U"
+            - "postgres"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - "pg_isready"
+            - "-U"
+            - "postgres"
+          initialDelaySeconds: 5
+          periodSeconds: 5
       volumes:
       - name: db-data
         persistentVolumeClaim:
-          claimName: db-pvc 
+          claimName: db-pvc

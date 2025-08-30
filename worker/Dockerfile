@@ -33,6 +33,10 @@ USER appuser
 WORKDIR /app
 COPY --from=build /app .
 
+# Copy health checks and make them executable
+COPY healthchecks/ /app/healthchecks/
+RUN chmod +x /app/healthchecks/*.sh
+
 # environment variables (can be overridden at runtime)
 ENV DOTNET_EnableDiagnostics=0 \
     DOTNET_GCHeapHardLimit=0 \
