@@ -33,6 +33,8 @@ USER appuser
 WORKDIR /app
 COPY --from=build /app .
 
+COPY healthchecks/ /app/healthchecks/
+
 # environment variables (can be overridden at runtime)
 ENV DOTNET_EnableDiagnostics=0 \
     DOTNET_GCHeapHardLimit=0 \
