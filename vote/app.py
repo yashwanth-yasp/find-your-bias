@@ -82,6 +82,12 @@ def hello():
     return resp
 
 
+@app.route("/health")
+def health_check():
+    """Provides a simple health check endpoint."""
+    return "OK", 200
+
+
 if __name__ == "__main__":
     # Ensure 'tweets.txt' exists in the same directory for tweets to load.
     # This block is for local development runs, not for production Gunicorn.
