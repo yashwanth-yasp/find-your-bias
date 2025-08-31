@@ -18,6 +18,11 @@ spec:
       - image: deadvexon/worker-find-your-bias:7403d0902a28e75ba22eae6c082625b68e631539
         imagePullPolicy: Always
         name: worker
+        livenessProbe:
+          exec:
+            command: ["pidof", "dotnet"]
+          initialDelaySeconds: 30
+          periodSeconds: 15
         resources:
           requests:
             cpu: "100m"
