@@ -4,7 +4,7 @@ var express = require("express"),
   cookieParser = require("cookie-parser"),
   app = express(),
   server = require("http").Server(app),
-  io = require("socket.io")(server),
+  io = require("socket.io")(server, { path: '/result/socket.io/'}),
   axios = require('axios');
 
 var port = process.env.PORT || 4000;
