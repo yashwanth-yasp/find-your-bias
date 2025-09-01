@@ -42,3 +42,4 @@ test8
 hpa done
 probes done
 ingress
+ingress test
