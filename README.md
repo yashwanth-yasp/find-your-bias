@@ -40,3 +40,4 @@ The application is composed of five primary microservices and two data stores, a
 test8
 
 hpa done
+check
