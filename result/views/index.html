@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8">
     <title>Find your bias -- Result</title>
-    <base href="/index.html">
-    <meta name = "viewport" content = "width=device-width, initial-scale = 1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="docker-compose, docker, stack">
     <meta name="author" content="Docker">
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <!-- Important: keep /result prefix so static files resolve -->
+    <link rel="stylesheet" href="/result/stylesheets/style.css" />
   </head>
-  <body ng-controller="statsCtrl" >
+  <body ng-controller="statsCtrl">
     <div id="content-container">
       <div id="content-container-center">
         <h1>Live Vote Stream</h1>
@@ -40,10 +40,12 @@
     </div>
     <div id="result">
       <span ng-if="total == 0">No votes yet</span>
-      <span ng-if="total > 0">{{total}} total votes</span>
+      <span ng-if="total > 0">{{ total }} total votes</span>
     </div>
-    <script src="socket.io.js"></script>
-    <script src="angular.min.js"></script>
-    <script src="app.js"></script>
+
+    <!-- Keep /result prefix for scripts too -->
+    <script src="/result/socket.io/socket.io.js"></script>
+    <script src="/result/angular.min.js"></script>
+    <script src="/result/app.js"></script>
   </body>
 </html>

@@ -1,5 +1,5 @@
 var app = angular.module('findyourbias', []);
-var socket = io.connect();
+var socket = io.connect({ path: '/result/socket.io/' });
 
 app.controller('statsCtrl', function($scope, $http){
   $scope.votes = [];
