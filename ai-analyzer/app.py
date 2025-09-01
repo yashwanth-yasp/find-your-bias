@@ -24,7 +24,7 @@ def get_db_connection():
     )
     return conn
 
-@app.route('/', methods=['GET'])
+@app.route('/api/analyze', methods=['GET'])
 def analyze_votes():
     """
     Analyzes the voting data by sending it to AWS Bedrock and returns the analysis.

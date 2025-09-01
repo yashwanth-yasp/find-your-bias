@@ -32,9 +32,7 @@ spec:
             name: vote
             port:
               number: 80
-      
-      # AI analysis service: /api/analyze → /
-      - path: /api/analyze(/|$)(.*)
+      - path: /api/analyze
         pathType: Prefix
         backend:
           service:
