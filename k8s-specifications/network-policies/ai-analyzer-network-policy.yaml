@@ -17,6 +17,16 @@ spec:
     ports:
     - protocol: TCP
       port: 5001
+  - from:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: ingress-nginx
+        podSelector:
+          matchLabels:
+            app.kubernetes.io/component: controller
+    ports:
+      - protocol: TCP
+        port: 5001
   egress:
   - to:
     - podSelector:
