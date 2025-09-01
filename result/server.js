@@ -1,11 +1,10 @@
 var express = require("express"),
   async = require("async"),
-  path = require("path"), // Add missing path require
   { Pool } = require("pg"),
   cookieParser = require("cookie-parser"),
   app = express(),
   server = require("http").Server(app),
-  io = require("socket.io")(server, { path: '/result/socket.io/'}), // Fixed path
+  io = require("socket.io")(server, { path: '/socket.io/'}),
   axios = require('axios');
 
 var port = process.env.PORT || 4000;
@@ -72,13 +71,10 @@ function collectVotesFromResult(result) {
 
 app.use(cookieParser());
 app.use(express.urlencoded());
+app.use(express.static(__dirname + "/views"));
 
-// Serve static files with proper path
-app.use(express.static(path.join(__dirname, "views")));
-
-// Root route for the result service
 app.get("/", function (req, res) {
-  res.sendFile(path.join(__dirname, "views", "index.html"));
+  res.sendFile(path.resolve(__dirname + "/views/index.html"));
 });
 
 app.get("/api/analyze", async (req, res) => {
