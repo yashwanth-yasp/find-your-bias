@@ -21,8 +21,8 @@ spec:
             name: result
             port:
               number: 80
-        pathRewrite:
-          nginx.ingress.kubernetes.io/rewrite-target: /result/$2
+        # pathRewrite:
+        #   nginx.ingress.kubernetes.io/rewrite-target: /result/$2
 
       # Vote service: default route
       - path: /()(.*)
