@@ -32,10 +32,10 @@ spec:
             name: vote
             port:
               number: 80
-      - path: /api/analyze
-        pathType: Prefix
-        backend:
-          service:
-            name: ai-analyzer
-            port:
-              number: 5001
+      # - path: /api/analyze
+      #   pathType: Prefix
+      #   backend:
+      #     service:
+      #       name: ai-analyzer
+      #       port:
+      #         number: 5001
