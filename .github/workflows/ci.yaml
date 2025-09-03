@@ -23,32 +23,33 @@ jobs:
           python-version: '3.9'
 
       # Lint
-      # - name: Lint Vote Service (Flake8)
-      #   run: |
-      #     pip install flake8
-      #     flake8 vote/
+      - name: Lint Vote Service (Flake8)
+        run: |
+          pip install flake8
+          flake8 vote/ || true
 
-      # SCA
-      # - name: Run SCA on Vote Service (Trivy)
-      #   uses: aquasecurity/trivy-action@master
-      #   with:
-      #     scan-type: fs
-      #     scan-ref: vote
-      #     format: table
-      #     severity: HIGH,CRITICAL
-      #     ignore-unfixed: true
+      SCA
+      - name: Run SCA on Vote Service (Trivy)
+        uses: aquasecurity/trivy-action@master
+        continue-on-error: true
+        with:
+          scan-type: fs
+          scan-ref: vote
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
 
-      # SAST
-      # - name: Run SAST on Vote Service (Bandit)
-      #   run: |
-      #     pip install bandit
-      #     bandit -r vote/ -ll -f json -o bandit-results.json || true
+      SAST
+      - name: Run SAST on Vote Service (Bandit)
+        run: |
+          pip install bandit
+          bandit -r vote/ -ll -f json -o bandit-results.json || true
 
-      # Unit tests
-      # - name: Run Vote Service Unit Tests
-      #   run: |
-      #     pip install pytest
-      #     pytest vote/tests || true
+      Unit tests
+      - name: Run Vote Service Unit Tests
+        run: |
+          pip install pytest
+          pytest vote/tests || true
 
       # Docker build & push
       - name: Set up Docker Buildx
@@ -80,40 +81,41 @@ jobs:
         with:
           node-version: '18'
 
-      # Lint
-      # - name: Install Node dependencies
-      #   run: |
-      #     cd result
-      #     npm install
+      Lint
+      - name: Install Node dependencies
+        run: |
+          cd result
+          npm install
 
-      # - name: Run Prettier check
-      #   run: |
-      #     npm install prettier
-      #     npx prettier --check server.js
-      #   working-directory: result
+      - name: Run ESLint check
+        run: |
+          npm install eslint eslint-plugin-security
+          npx eslint . || true
+        working-directory: result
 
-      # SCA
-      # - name: Run SCA on Result Service (Trivy)
-      #   uses: aquasecurity/trivy-action@master
-      #   with:
-      #     scan-type: fs
-      #     scan-ref: result
-      #     format: table
-      #     severity: HIGH,CRITICAL
-      #     ignore-unfixed: true
+      SCA
+      - name: Run SCA on Result Service (Trivy)
+        uses: aquasecurity/trivy-action@master
+        continue-on-error: true
+        with:
+          scan-type: fs
+          scan-ref: result
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
 
-      # SAST
-      # - name: Run SAST on Result Service (ESLint security)
-      #   run: |
-      #     cd result
-      #     npm install eslint eslint-plugin-security
-      #     npx eslint . || true
+      SAST
+      - name: Run SAST on Result Service (ESLint security)
+        run: |
+          cd result
+          npm install eslint eslint-plugin-security
+          npx eslint . || true
 
-      # Unit tests
-      # - name: Run Result Service Unit Tests
-      #   run: |
-      #     cd result
-      #     npm test || true
+      Unit tests
+      - name: Run Result Service Unit Tests
+        run: |
+          cd result
+          npm test || true
 
       # Docker build & push
       - name: Set up Docker Buildx
@@ -146,24 +148,25 @@ jobs:
           dotnet-version: '7.0'
 
       # SCA
-      # - name: Run SCA on Worker Service (Trivy)
-      #   uses: aquasecurity/trivy-action@master
-      #   with:
-      #     scan-type: fs
-      #     scan-ref: worker
-      #     format: table
-      #     severity: HIGH,CRITICAL
-      #     ignore-unfixed: true
+      - name: Run SCA on Worker Service (Trivy)
+        uses: aquasecurity/trivy-action@master
+        continue-on-error: true
+        with:
+          scan-type: fs
+          scan-ref: worker
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
 
       # (Optional) Add Roslyn analyzers or SonarQube for SAST
-      # - name: Run SAST on Worker Service
-      #   run: dotnet build /p:RunAnalyzers=true
+      - name: Run SAST on Worker Service
+        run: dotnet build /p:RunAnalyzers=true || true
 
       # Unit tests
-      # - name: Run Worker Service Unit Tests
-      #   run: |
-      #     cd worker
-      #     dotnet test || true
+      - name: Run Worker Service Unit Tests
+        run: |
+          cd worker
+          dotnet test || true
 
       # Docker build & push
       - name: Set up Docker Buildx
@@ -195,33 +198,34 @@ jobs:
         with:
           python-version: '3.9'
 
-      # Lint
-      # - name: Lint AI Analyzer Service (Flake8)
-      #   run: |
-      #     pip install flake8
-      #     flake8 ai-analyzer/
+      Lint
+      - name: Lint AI Analyzer Service (Flake8)
+        run: |
+          pip install flake8
+          flake8 ai-analyzer/ || true
 
-      # SCA
-      # - name: Run SCA on AI Analyzer Service (Trivy)
-      #   uses: aquasecurity/trivy-action@master
-      #   with:
-      #     scan-type: fs
-      #     scan-ref: ai-analyzer
-      #     format: table
-      #     severity: HIGH,CRITICAL
-      #     ignore-unfixed: true
+      SCA
+      - name: Run SCA on AI Analyzer Service (Trivy)
+        uses: aquasecurity/trivy-action@master
+        continue-on-error: true
+        with:
+          scan-type: fs
+          scan-ref: ai-analyzer
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
 
-      # SAST
-      # - name: Run SAST on AI Analyzer Service (Bandit)
-      #   run: |
-      #     pip install bandit
-      #     bandit -r ai-analyzer/ -ll -f json -o bandit-results.json || true
+      SAST
+      - name: Run SAST on AI Analyzer Service (Bandit)
+        run: |
+          pip install bandit
+          bandit -r ai-analyzer/ -ll -f json -o bandit-results.json || true
 
-      # Unit tests
-      # - name: Run AI Analyzer Service Unit Tests
-      #   run: |
-      #     pip install pytest
-      #     pytest ai-analyzer/tests || true
+      Unit tests
+      - name: Run AI Analyzer Service Unit Tests
+        run: |
+          pip install pytest
+          pytest ai-analyzer/tests || true
 
       # Docker build & push
       - name: Set up Docker Buildx
