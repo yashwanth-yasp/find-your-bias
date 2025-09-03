@@ -16,10 +16,11 @@ WORKDIR /src
 # Copy csproj and restore dependencies (better layer caching)
 COPY *.csproj ./
 RUN dotnet restore -a ${TARGETARCH}
+RUN dotnet restore
 
 # Copy everything else and build
 COPY . ./
-RUN dotnet publish -c Release -o /app -a ${TARGETARCH} --self-contained false --no-restore
+RUN dotnet publish -c Release -o /app -a ${TARGETARCH} --self-contained false   
 
 
 
