@@ -8,9 +8,8 @@ on:
 
 jobs:
   deploy:
-    # Only run if the CI workflow succeeded
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -19,7 +18,12 @@ jobs:
           repository: ${{ github.event.workflow_run.head_repository.full_name }}
           ref: ${{ github.event.workflow_run.head_sha }}
 
-      - name: Create/Update AWS Credentials Secret
+      # Configure kubeconfig from secret
+      - name: Set up Kubeconfig
+        run: |
+          echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
+
+      - name: Create/Update AWS Credentials Secret in K8s
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -29,16 +33,22 @@ jobs:
             --from-literal=AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
             --from-literal=AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 
-      - name: Deploy to Kubernetes
+      - name: Deploy all microservices
         run: |
+          echo "➡️ Updating Vote Service"
           kubectl set image deployment/vote vote=${{ secrets.DOCKER_HUB_USERNAME }}/vote-find-your-bias:${{ github.event.workflow_run.head_sha }}
-          kubectl set image deployment/result result=${{ secrets.DOCKER_HUB_USERNAME }}/result-find-your-bias:${{ github.event.workflow_run.head_sha }}
-          kubectl set image deployment/worker worker=${{ secrets.DOCKER_HUB_USERNAME }}/worker-find-your-bias:${{ github.event.workflow_run.head_sha }}
-          kubectl set image deployment/ai-analyzer ai-analyzer=${{ secrets.DOCKER_HUB_USERNAME }}/ai-analyzer-find-your-bias:${{ github.event.workflow_run.head_sha }}
-
           kubectl rollout status deployment/vote
+
+          echo "➡️ Updating Result Service"
+          kubectl set image deployment/result result=${{ secrets.DOCKER_HUB_USERNAME }}/result-find-your-bias:${{ github.event.workflow_run.head_sha }}
           kubectl rollout status deployment/result
+
+          echo "➡️ Updating Worker Service"
+          kubectl set image deployment/worker worker=${{ secrets.DOCKER_HUB_USERNAME }}/worker-find-your-bias:${{ github.event.workflow_run.head_sha }}
           kubectl rollout status deployment/worker
+
+          echo "➡️ Updating AI Analyzer Service"
+          kubectl set image deployment/ai-analyzer ai-analyzer=${{ secrets.DOCKER_HUB_USERNAME }}/ai-analyzer-find-your-bias:${{ github.event.workflow_run.head_sha }}
           kubectl rollout status deployment/ai-analyzer
 
       # --- In-Cluster DAST Stage ---
@@ -48,7 +58,7 @@ jobs:
           
           # Create a temp ZAP scan pod
           kubectl run zap-scan \
-            --image=owasp/zap2docker-stable \
+            --image=owasp/zap2docker-stable \ 
             --restart=Never \
             --command -- \
             zap-baseline.py \
