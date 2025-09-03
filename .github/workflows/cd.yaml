@@ -35,7 +35,7 @@ jobs:
 
       - name: Deploy all microservices
         run: |
-          echo "➡️ Updating Vote Service"
+          echo "➡️ Updating Vote Service mm"
           kubectl set image deployment/vote vote=${{ secrets.DOCKER_HUB_USERNAME }}/vote-find-your-bias:${{ github.event.workflow_run.head_sha }}
           kubectl rollout status deployment/vote
 
