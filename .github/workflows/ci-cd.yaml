@@ -240,6 +240,7 @@ jobs:
 
       - name: Set up Kubeconfig
         run: |
+          mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
 
       - name: Create/Update AWS Credentials Secret in K8s
