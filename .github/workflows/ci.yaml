@@ -28,7 +28,7 @@ jobs:
           pip install flake8
           flake8 vote/ || true
 
-      SCA
+      #SCA
       - name: Run SCA on Vote Service (Trivy)
         uses: aquasecurity/trivy-action@master
         continue-on-error: true
@@ -39,13 +39,13 @@ jobs:
           severity: HIGH,CRITICAL
           ignore-unfixed: true
 
-      SAST
+      #SAST
       - name: Run SAST on Vote Service (Bandit)
         run: |
           pip install bandit
           bandit -r vote/ -ll -f json -o bandit-results.json || true
 
-      Unit tests
+      #Unit tests
       - name: Run Vote Service Unit Tests
         run: |
           pip install pytest
@@ -81,7 +81,7 @@ jobs:
         with:
           node-version: '18'
 
-      Lint
+      #Lint
       - name: Install Node dependencies
         run: |
           cd result
@@ -93,7 +93,7 @@ jobs:
           npx eslint . || true
         working-directory: result
 
-      SCA
+      #SCA
       - name: Run SCA on Result Service (Trivy)
         uses: aquasecurity/trivy-action@master
         continue-on-error: true
@@ -104,14 +104,14 @@ jobs:
           severity: HIGH,CRITICAL
           ignore-unfixed: true
 
-      SAST
+      #SAST
       - name: Run SAST on Result Service (ESLint security)
         run: |
           cd result
           npm install eslint eslint-plugin-security
           npx eslint . || true
 
-      Unit tests
+      #Unit tests
       - name: Run Result Service Unit Tests
         run: |
           cd result
@@ -198,13 +198,13 @@ jobs:
         with:
           python-version: '3.9'
 
-      Lint
+      #Lint
       - name: Lint AI Analyzer Service (Flake8)
         run: |
           pip install flake8
           flake8 ai-analyzer/ || true
 
-      SCA
+      #SCA
       - name: Run SCA on AI Analyzer Service (Trivy)
         uses: aquasecurity/trivy-action@master
         continue-on-error: true
@@ -215,13 +215,13 @@ jobs:
           severity: HIGH,CRITICAL
           ignore-unfixed: true
 
-      SAST
+      #SAST
       - name: Run SAST on AI Analyzer Service (Bandit)
         run: |
           pip install bandit
           bandit -r ai-analyzer/ -ll -f json -o bandit-results.json || true
 
-      Unit tests
+      #Unit tests
       - name: Run AI Analyzer Service Unit Tests
         run: |
           pip install pytest
